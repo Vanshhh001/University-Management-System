@@ -6,26 +6,28 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.chrono.JapaneseDate;
 import java.util.Random;
 
-public class AddFaculty extends JFrame implements ActionListener {
+public class AddStudent extends JFrame implements ActionListener {
 
     JTextField textName,textfather,textAddress,textPhone,textemail,textM10,textM12,textAadhar;
 
     JLabel empText;
+
     JDateChooser cdob;
+
     JComboBox courseBox,departmentBox;
+
     JButton submit,cancel;
 
     Random ran = new Random();
+
     long f4 = Math.abs((ran.nextLong() % 90000) + 1000L);
+    AddStudent(){
 
-    AddFaculty(){
+        getContentPane().setBackground(new Color(128,176,225));
 
-        getContentPane().setBackground(new Color(166,164,252));
-
-        JLabel heading = new JLabel("New Teacher Details");
+        JLabel heading = new JLabel("New Student Details");
         heading.setBounds(310,30,500,50);
         heading.setFont(new Font("serif",Font.BOLD,30));
         add(heading);
@@ -48,7 +50,7 @@ public class AddFaculty extends JFrame implements ActionListener {
         textfather.setBounds(600,150,150,30);
         add(textfather);
 
-        JLabel empID = new JLabel("Employee ID");
+        JLabel empID = new JLabel("Roll Number");
         empID.setBounds(50,200,150,30);
         empID.setFont(new Font("serif",Font.BOLD,20));
         add(empID);
@@ -121,7 +123,7 @@ public class AddFaculty extends JFrame implements ActionListener {
         textAadhar.setBounds(600,350,150,30);
         add(textAadhar);
 
-        JLabel Qualification = new JLabel("Qualification");
+        JLabel Qualification = new JLabel("Course");
         Qualification.setBounds(50,400,200,30);
         Qualification.setFont(new Font("serif",Font.BOLD,20));
         add(Qualification);
@@ -133,7 +135,7 @@ public class AddFaculty extends JFrame implements ActionListener {
         courseBox.setBackground(Color.WHITE);
         add(courseBox);
 
-        JLabel Department = new JLabel("Department");
+        JLabel Department = new JLabel("Branch");
         Department.setBounds(400,400,200,30);
         Department.setFont(new Font("serif",Font.BOLD,20));
         add(Department);
@@ -165,6 +167,7 @@ public class AddFaculty extends JFrame implements ActionListener {
         setLayout(null);
         setVisible(true);
 
+
     }
 
     @Override
@@ -184,11 +187,11 @@ public class AddFaculty extends JFrame implements ActionListener {
             String course = (String) courseBox.getSelectedItem();
             String department = (String) departmentBox.getSelectedItem();
             try{
-                 String q = "insert into teacher values('"+name+"', '"+fname+"','"+empid+"','"+dob+"','"+address+"','"+phone+"','"+email+"','"+x+"','"+xii+"','"+aadhar+"','"+course+"','"+department+"')";
-                 Conn c = new Conn();
-                 c.statement.executeUpdate(q);
-                 JOptionPane.showMessageDialog(null,"Details Inserted");
-                 setVisible(false);
+                String q = "insert into student values('"+name+"', '"+fname+"','"+empid+"','"+dob+"','"+address+"','"+phone+"','"+email+"','"+x+"','"+xii+"','"+aadhar+"','"+course+"','"+department+"')";
+                Conn c = new Conn();
+                c.statement.executeUpdate(q);
+                JOptionPane.showMessageDialog(null,"Details Inserted");
+                setVisible(false);
 
             }catch (Exception E){
                 E.printStackTrace();
@@ -199,10 +202,10 @@ public class AddFaculty extends JFrame implements ActionListener {
             setVisible(false);
         }
 
+
     }
 
     public static void main(String[] args) {
-        new AddFaculty();
-
+      new AddStudent();
     }
 }
