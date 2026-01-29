@@ -172,7 +172,7 @@ public class AddFaculty extends JFrame implements ActionListener {
 
         if(e.getSource() == submit){
             String name = textName.getText();
-            String fname = textfather.getName();
+            String fname = textfather.getText();
             String empid = empText.getText();
             String dob = ((JTextField) cdob.getDateEditor().getUiComponent()).getText();
             String address = textAddress.getText();
