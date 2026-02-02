@@ -98,7 +98,7 @@ public class StudentFeeForm extends JFrame implements ActionListener {
         add(Qualification);
 
         //dropdown for couses which we select
-        String course[] = {"B.Tech","BBA","BCA","BSC","MSC","MBA","MCA","MCom","MA","BA"};
+        String course[] = {"BTech","BBA","BCA","BSC","MSC","MBA","MCA","MCom","MA","BA"};
         courseBox = new JComboBox(course);
         courseBox.setBounds(200,180,150,20);
         courseBox.setBackground(Color.WHITE);
@@ -119,7 +119,7 @@ public class StudentFeeForm extends JFrame implements ActionListener {
         textsemester.setBounds(40,260,150,20);
         add(textsemester);
 
-        String semester[] = {"Semester 1","Semester 2","Semester 3","Semester 4","Semester 5","Semester 6","Semester 7","Semester 8"};
+        String semester[] = {"semester1","semester2","semester3","semester4","semester5","semester6","semester7","semester8"};
         semesterBox = new JComboBox(semester);
         semesterBox.setBounds(200,260,150,20);
         add(semesterBox);
@@ -132,20 +132,22 @@ public class StudentFeeForm extends JFrame implements ActionListener {
         totalAmount.setBounds(200,300,50,20);
         add(totalAmount);
 
-        update = new JButton();
+        update = new JButton("Update");
         update.setBounds(30,380,100,25);
         update.addActionListener(this);
         add(update);
 
-        pay = new JButton();
+        pay = new JButton("Pay");
         pay.setBounds(150,380,100,25);
         pay.addActionListener(this);
         add(pay);
 
-        back = new JButton();
+        back = new JButton("Back");
         back.setBounds(270,380,100,25);
         back.addActionListener(this);
         add(back);
+
+        
 
 
 
@@ -160,6 +162,44 @@ public class StudentFeeForm extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
+        if(e.getSource() == update){
+            String course = (String) courseBox.getSelectedItem();
+            String semester = (String) semesterBox.getSelectedItem();
+
+            try {
+                Conn c = new Conn();
+                ResultSet resultSet = c.statement.executeQuery("select * from fee where course = '"+course+"' ");
+                while (resultSet.next()){
+                    totalAmount.setText(resultSet.getString(semester)); // jo sem select hoga vo dayabase se data nikal kr aayrga vo yha set ho jayega
+
+                }
+
+            }catch (Exception E){
+                E.printStackTrace();
+            }
+        } else if (e.getSource() == pay) {
+            String rollno = CrollNumber.getSelectedItem();
+            String course = (String) courseBox.getSelectedItem();
+            String semester = (String) semesterBox.getSelectedItem();
+            String branch = (String) departmentBox.getSelectedItem();
+            String total = totalAmount.getText();
+
+            try{
+
+                Conn c = new Conn();
+                String Q = "insert into feecollege values('"+rollno+"','"+course+"','"+branch+"','"+semester+"','"+total+"')";
+                c.statement.executeUpdate(Q);
+                JOptionPane.showMessageDialog(null,"fee Submitted successfully");
+                
+
+            }catch (Exception E){
+                E.printStackTrace();
+            }
+
+        } else {
+            setVisible(false);
+        }
 
     }
 
