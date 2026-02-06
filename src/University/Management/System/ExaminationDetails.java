@@ -79,7 +79,9 @@ public class ExaminationDetails extends JFrame implements ActionListener {
         if(e.getSource()==result){
             setVisible(false);
 
-            //new frame marks class
+            //new frame Marks class
+            new Marks(search.getText());
+
 
         }else {
             setVisible(false);

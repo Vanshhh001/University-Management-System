@@ -112,7 +112,8 @@ public class TeacherDetails extends JFrame implements ActionListener {
             new AddFaculty();
 
         } else if (e.getSource() == update) {
-
+            setVisible(false);
+            new UpdateTeacher();
 
         }else{
             setVisible(false);
