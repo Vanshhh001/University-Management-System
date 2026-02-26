@@ -12,8 +12,14 @@ public class ExaminationDetails extends JFrame implements ActionListener {
     JTextField search;
     JButton result,back;
     JTable table;
+    Choice croll;
+    Choice csem;
+    JComboBox comboBox;
+
 
     ExaminationDetails(){
+
+
 
         getContentPane().setBackground(new Color(241,252,210));
 
@@ -22,10 +28,32 @@ public class ExaminationDetails extends JFrame implements ActionListener {
         heading.setFont(new Font("Tahoma",Font.BOLD,24));
         add(heading);
 
+
+
         search = new JTextField();
-        search.setBounds(80,90,200,30);
+        search.setBounds(80,90,150,30);
         search.setFont(new Font("Tahoma",Font.PLAIN,18));
         add(search);
+
+        JLabel sem = new JLabel("Select Semester");
+        sem.setBounds(600,90,150,30);
+        add(sem);
+
+        String semesters[] = {
+                "1st Semester",
+                "2st Semester",
+                "3st Semester",
+                "4st Semester",
+                "5st Semester",
+                "6st Semester",
+                "7st Semester",
+                "8st Semester"
+        };
+
+        comboBox = new JComboBox(semesters);
+        comboBox.setBounds(700,90,150,30);
+        add(comboBox);
+
 
         result = new JButton("Result");
         result.setBounds(300,90,120,30);
@@ -76,11 +104,19 @@ public class ExaminationDetails extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if(e.getSource()==result){
-            setVisible(false);
+        if (e.getSource() == result) {
 
-            //new frame Marks class
-            new Marks(search.getText());
+            int row = table.getSelectedRow();
+
+            if (row == -1) {
+                JOptionPane.showMessageDialog(null, "Select a student first");
+                return;
+            }
+
+            String roll = table.getValueAt(row, 2).toString();
+            String semester = comboBox.getSelectedItem().toString();
+
+            new Marks(roll, semester);
 
 
         }else {

@@ -139,11 +139,36 @@ public class EnterMarks extends JFrame implements ActionListener {
         if(e.getSource() == submit){
             try{
                 Conn c = new Conn();
-                String Q1 = "insert into subject values('"+choicerollno.getSelectedItem()+"','"+comboBox.getSelectedItem()+"','"+sub1.getText()+"','"+sub2.getText()+"','"+sub3.getText()+"','"+sub4.getText()+"','"+sub5.getText()+"')";
-                String Q2 = "insert into marks values('"+choicerollno.getSelectedItem()+"','"+comboBox.getSelectedItem()+"','"+mrk1.getText()+"','"+mrk2.getText()+"','"+mrk3.getText()+"','"+mrk4.getText()+"','"+mrk5.getText()+"')";
+
+                String roll = choicerollno.getSelectedItem();
+                String semester = comboBox.getSelectedItem().toString();
+
+                String Q1 =
+                        "INSERT INTO subject (rollno, semester, subj1, subj2, subj3, subj4, subj5) " +
+                                "VALUES ('"+roll+"','"+semester+"','"+sub1.getText()+"','"+sub2.getText()+"','"+sub3.getText()+"','"+sub4.getText()+"','"+sub5.getText()+"') " +
+                                "ON DUPLICATE KEY UPDATE " +
+                                "subj1=VALUES(subj1), " +
+                                "subj2=VALUES(subj2), " +
+                                "subj3=VALUES(subj3), " +
+                                "subj4=VALUES(subj4), " +
+                                "subj5=VALUES(subj5)";
+
+                String Q2 =
+                        "INSERT INTO marks (rollno, semester, mrk1, mrk2, mrk3, mrk4, mrk5) " +
+                                "VALUES ('"+roll+"','"+semester+"','"+mrk1.getText()+"','"+mrk2.getText()+"','"+mrk3.getText()+"','"+mrk4.getText()+"','"+mrk5.getText()+"') " +
+                                "ON DUPLICATE KEY UPDATE " +
+                                "mrk1=VALUES(mrk1), " +
+                                "mrk2=VALUES(mrk2), " +
+                                "mrk3=VALUES(mrk3), " +
+                                "mrk4=VALUES(mrk4), " +
+                                "mrk5=VALUES(mrk5)";
 
                 c.statement.executeUpdate(Q1);
                 c.statement.executeUpdate(Q2);
+
+                JOptionPane.showMessageDialog(null,"Marks Inserted / Updated Successfully");
+                setVisible(false);
+
                 JOptionPane.showMessageDialog(null,"Marks Inserted Succesfully");
                 setVisible(false);
 

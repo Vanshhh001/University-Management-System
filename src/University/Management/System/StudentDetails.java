@@ -12,7 +12,7 @@ public class StudentDetails extends JFrame implements ActionListener {
 
     Choice choice;
     JTable table;
-    JButton search, print, update, add, cancel;
+    JButton search, print, update, add, cancel,delete;
 
     StudentDetails() {
         getContentPane().setBackground(new Color(210, 252, 218));
@@ -76,6 +76,11 @@ public class StudentDetails extends JFrame implements ActionListener {
         cancel.addActionListener(this);
         add(cancel);
 
+        delete = new JButton("Delete");
+        delete.setBounds(520, 70, 80, 20);
+        delete.addActionListener(this);
+        add(delete);
+
 
         setLayout(null);
         setSize(900, 700);
@@ -113,7 +118,48 @@ public class StudentDetails extends JFrame implements ActionListener {
            setVisible(false);
            new UpdateStudent();
             
-        }else{
+        } else if (e.getSource() == delete) {
+
+            int selectedRow = table.getSelectedRow();
+
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(null, "Please select a row to delete");
+                return;
+            }
+
+            String roll = table.getValueAt(selectedRow, 2).toString();
+            // 2 = rollno column index (check your table column order)
+
+            int confirm = JOptionPane.showConfirmDialog(
+                    null,
+                    "Are you sure?",
+                    "Delete Confirmation",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                try {
+                    Conn c = new Conn();
+
+                    c.statement.executeUpdate(
+                            "delete from marks where rollno='" + roll + "'"
+                    );
+
+//                    c.statement.executeUpdate(
+//                            "delete from subject where rollno='" + roll + "'"
+//                    );
+
+                    c.statement.executeUpdate(
+                            "delete from student where rollno='" + roll + "'"
+                    );
+
+                    JOptionPane.showMessageDialog(null, "Deleted Successfully");
+
+                } catch (Exception E) {
+                    E.printStackTrace();
+                }
+            }
+        } else{
             setVisible(false);
         }
     }
