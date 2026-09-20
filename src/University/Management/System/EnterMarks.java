@@ -90,22 +90,27 @@ public class EnterMarks extends JFrame implements ActionListener {
 
 
         mrk1 = new JTextField();
+        InputValidation.digitsOnly(mrk1, 3);
         mrk1.setBounds(250,200,200,20);
         add(mrk1);
 
         mrk2 = new JTextField();
+        InputValidation.digitsOnly(mrk2, 3);
         mrk2.setBounds(250,230,200,20);
         add(mrk2);
 
         mrk3 = new JTextField();
+        InputValidation.digitsOnly(mrk3, 3);
         mrk3.setBounds(250,260,200,20);
         add(mrk3);
 
         mrk4 = new JTextField();
+        InputValidation.digitsOnly(mrk4, 3);
         mrk4.setBounds(250,290,200,20);
         add(mrk4);
 
         mrk5 = new JTextField();
+        InputValidation.digitsOnly(mrk5, 3);
         mrk5.setBounds(250,320,200,20);
         add(mrk5);
 
@@ -137,6 +142,12 @@ public class EnterMarks extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == submit){
+            if (!InputValidation.isMark(mrk1.getText()) || !InputValidation.isMark(mrk2.getText())
+                    || !InputValidation.isMark(mrk3.getText()) || !InputValidation.isMark(mrk4.getText())
+                    || !InputValidation.isMark(mrk5.getText())) {
+                JOptionPane.showMessageDialog(this, "Each mark must be a whole number between 0 and 100.");
+                return;
+            }
             try{
                 Conn c = new Conn();
 

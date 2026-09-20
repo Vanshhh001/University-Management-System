@@ -104,6 +104,7 @@ public class UpdateTeacher extends JFrame implements ActionListener {
         add(phone);
 
         textPhone = new JTextField();
+        InputValidation.digitsOnly(textPhone, 10);
         textPhone.setBounds(600,250,150,30);
         add(textPhone);
 
@@ -140,6 +141,7 @@ public class UpdateTeacher extends JFrame implements ActionListener {
         add(AadharNo);
 
         textAadhar = new JTextField();
+        InputValidation.digitsOnly(textAadhar, 12);
         textAadhar.setBounds(600,350,150,30);
         add(textAadhar);
 
@@ -243,6 +245,11 @@ public class UpdateTeacher extends JFrame implements ActionListener {
             String email = textemail.getText();
             String course = textcourse.getText();
             String branch = textbranch.getText();
+
+            if (!InputValidation.isPhoneNumber(phone)) {
+                JOptionPane.showMessageDialog(this, "Enter a valid 10-digit phone number.");
+                return;
+            }
 
             try {
                 String Q = "update teacher set address = '"+address+"', phone = '"+phone+"',email = '"+email+"',education = '"+course+"',department = '"+branch+"' where empId = '"+empId+"' ";

@@ -82,6 +82,7 @@ public class AddFaculty extends JFrame implements ActionListener {
         add(phone);
 
         textPhone = new JTextField();
+        InputValidation.digitsOnly(textPhone, 10);
         textPhone.setBounds(600,250,150,30);
         add(textPhone);
 
@@ -100,6 +101,7 @@ public class AddFaculty extends JFrame implements ActionListener {
         add(M10);
 
         textM10 = new JTextField();
+        InputValidation.percentage(textM10);
         textM10.setBounds(600,300,150,30);
         add(textM10);
 
@@ -109,6 +111,7 @@ public class AddFaculty extends JFrame implements ActionListener {
         add(M12);
 
         textM12 = new JTextField();
+        InputValidation.percentage(textM12);
         textM12.setBounds(200,350,150,30);
         add(textM12);
 
@@ -118,6 +121,7 @@ public class AddFaculty extends JFrame implements ActionListener {
         add(AadharNo);
 
         textAadhar = new JTextField();
+        InputValidation.digitsOnly(textAadhar, 12);
         textAadhar.setBounds(600,350,150,30);
         add(textAadhar);
 
@@ -183,6 +187,18 @@ public class AddFaculty extends JFrame implements ActionListener {
             String aadhar = textAadhar.getText();
             String course = (String) courseBox.getSelectedItem();
             String department = (String) departmentBox.getSelectedItem();
+            if (!InputValidation.isPhoneNumber(phone)) {
+                JOptionPane.showMessageDialog(this, "Enter a valid 10-digit phone number.");
+                return;
+            }
+            if (!InputValidation.isAadhaarNumber(aadhar)) {
+                JOptionPane.showMessageDialog(this, "Enter a valid 12-digit Aadhaar number.");
+                return;
+            }
+            if (!InputValidation.isPercentage(x) || !InputValidation.isPercentage(xii)) {
+                JOptionPane.showMessageDialog(this, "Class X and XII percentages must be between 0 and 100.");
+                return;
+            }
             try{
                  String q = "insert into teacher values('"+name+"', '"+fname+"','"+empid+"','"+dob+"','"+address+"','"+phone+"','"+email+"','"+x+"','"+xii+"','"+aadhar+"','"+course+"','"+department+"')";
                  Conn c = new Conn();

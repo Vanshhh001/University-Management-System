@@ -166,6 +166,8 @@ public class main_class extends JFrame implements ActionListener {
         exit.add(Exit);
 
 
+
+
         setJMenuBar(mb);
 
 
