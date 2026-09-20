@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Random;
+import java.sql.ResultSet;
 
 public class AddStudent extends JFrame implements ActionListener {
 
@@ -20,9 +20,7 @@ public class AddStudent extends JFrame implements ActionListener {
 
     JButton submit,cancel;
 
-    Random ran = new Random();
-
-    long f4 = Math.abs((ran.nextLong() % 90000) + 1000L);
+    private static final long FIRST_ROLL_NUMBER = 1000020000L;
     AddStudent(){
 
         getContentPane().setBackground(new Color(128,176,225));
@@ -55,7 +53,7 @@ public class AddStudent extends JFrame implements ActionListener {
         empID.setFont(new Font("serif",Font.BOLD,20));
         add(empID);
 
-        empText =  new JLabel("10000"+f4);
+        empText =  new JLabel(nextRollNumber());
         empText.setBounds(200,200,150,30);
         empText.setFont(new Font("serif",Font.BOLD,20));
         add(empText);
@@ -172,6 +170,24 @@ public class AddStudent extends JFrame implements ActionListener {
         setVisible(true);
 
 
+    }
+
+    /** Returns the next roll number after the largest numeric student roll number. */
+    private String nextRollNumber() {
+        long nextRollNumber = FIRST_ROLL_NUMBER;
+        try {
+            Conn c = new Conn();
+            ResultSet resultSet = c.statement.executeQuery(
+                    "select max(cast(rollno as unsigned)) as highest_rollno from student "
+                            + "where rollno regexp '^[0-9]+$'");
+            if (resultSet.next() && resultSet.getLong("highest_rollno") >= FIRST_ROLL_NUMBER) {
+                nextRollNumber = resultSet.getLong("highest_rollno") + 1;
+            }
+        } catch (Exception exception) {
+            JOptionPane.showMessageDialog(this,
+                    "Could not read the previous roll number. The first roll number will be used.");
+        }
+        return String.valueOf(nextRollNumber);
     }
 
     @Override
