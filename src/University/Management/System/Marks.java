@@ -1,161 +1,207 @@
 package University.Management.System;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class Marks extends JFrame implements ActionListener {
-    String rollno;
-    JButton cancel;
+    private static final Color NAVY = new Color(20, 49, 85);
+    private static final Color LIGHT_BLUE = new Color(235, 243, 252);
 
-
-
-    public Marks(String rollno, String semester){
-        this.rollno = rollno;
-
-
-        setSize(500, 600);
-        setLocation(500, 100);
-        setLayout(null);
-
-        getContentPane().setBackground(new Color(210, 252, 248));
-
-        JLabel heading = new JLabel("V.S Technical Univeristy");
-        heading.setBounds(110, 10, 500, 30);
-        heading.setFont(new Font("Tahoma", Font.BOLD, 20));
-        add(heading);
-
-        JLabel subheading = new JLabel("Result of Examination 2023");
-        subheading.setBounds(100, 50, 500, 20);
-        subheading.setFont(new Font("Tahoma", Font.BOLD, 18));
-        add(subheading);
-
-        JLabel lblrollno = new JLabel("Roll Number " + rollno);
-        lblrollno.setBounds(60, 100, 500, 20);
-        lblrollno.setFont(new Font("Tahoma", Font.PLAIN, 18));
-        add(lblrollno);
-
-        JLabel lblsemester = new JLabel();
-        lblsemester.setBounds(60, 130, 500, 20);
-        lblsemester.setFont(new Font("Tahoma", Font.PLAIN, 18));
-        add(lblsemester);
-
-        JLabel subjectHeading = new JLabel("Subject");
-        subjectHeading.setBounds(100,170,200,25);
-        subjectHeading.setFont(new Font("Tahoma", Font.BOLD, 18));
-        add(subjectHeading);
-
-        JLabel marksHeading = new JLabel("Marks");
-        marksHeading.setBounds(300,170,100,25);
-        marksHeading.setFont(new Font("Tahoma", Font.BOLD, 18));
-        marksHeading.setHorizontalAlignment(SwingConstants.RIGHT);
-        add(marksHeading);
-
-        JLabel sub1 = new JLabel();
-        sub1.setBounds(100, 200, 500, 20);
-        sub1.setFont(new Font("Tahoma", Font.PLAIN, 18));
-        add(sub1);
-        JLabel m1 = new JLabel();
-        m1.setBounds(350, 200, 500, 20);
-        m1.setFont(new Font("Tahoma", Font.PLAIN, 18));
-        add(m1);
-
-
-        JLabel sub2 = new JLabel();
-        sub2.setBounds(100, 230, 500, 20);
-        sub2.setFont(new Font("Tahoma", Font.PLAIN, 18));
-        add(sub2);
-        JLabel m2 = new JLabel();
-        m2.setBounds(350, 230, 500, 20);
-        m2.setFont(new Font("Tahoma", Font.PLAIN, 18));
-        add(m2);
-
-
-        JLabel sub3 = new JLabel();
-        sub3.setBounds(100, 260, 500, 20);
-        sub3.setFont(new Font("Tahoma", Font.PLAIN, 18));
-        add(sub3);
-        JLabel m3 = new JLabel();
-        m3.setBounds(350, 260, 500, 20);
-        m3.setFont(new Font("Tahoma", Font.PLAIN, 18));
-        add(m3);
-
-
-
-        JLabel sub4 = new JLabel();
-        sub4.setBounds(100, 290, 500, 20);
-        sub4.setFont(new Font("Tahoma", Font.PLAIN, 18));
-        add(sub4);
-        JLabel m4 = new JLabel();
-        m4.setBounds(350, 290, 500, 20);
-        m4.setFont(new Font("Tahoma", Font.PLAIN, 18));
-        add(m4);
-
-
-
-        JLabel sub5 = new JLabel();
-        sub5.setBounds(100, 320, 500, 20);
-        sub5.setFont(new Font("Tahoma", Font.PLAIN, 18));
-        add(sub5);
-        JLabel m5 = new JLabel();
-        m5.setBounds(350, 320, 500, 20);
-        m5.setFont(new Font("Tahoma", Font.PLAIN, 18));
-        add(m5);
-
-
-        try {
-            Conn c = new Conn();
-
-            ResultSet rs = c.statement.executeQuery(
-                    "select s.subj1, s.subj2, s.subj3, s.subj4, s.subj5, " +
-                            "m.mrk1, m.mrk2, m.mrk3, m.mrk4, m.mrk5, m.semester " +
-                            "from subject s join marks m " +
-                            "on s.rollno = m.rollno and s.semester = m.semester " +
-                            "where s.rollno = '"+rollno+"' and s.semester = '"+semester+"'"
-            );
-
-            while(rs.next()) {
-                sub1.setText(rs.getString("subj1"));
-                m1.setText(rs.getString("mrk1"));
-
-                sub2.setText(rs.getString("subj2"));
-                m2.setText(rs.getString("mrk2"));
-
-                sub3.setText(rs.getString("subj3"));
-                m3.setText(rs.getString("mrk3"));
-
-                sub4.setText(rs.getString("subj4"));
-                m4.setText(rs.getString("mrk4"));
-
-                sub5.setText(rs.getString("subj5"));
-                m5.setText(rs.getString("mrk5"));
-
-                lblsemester.setText("Semester: " + rs.getString("semester"));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+    private final String rollno;
+    private final String selectedSemester;
+    private final JLabel semesterValue = new JLabel("-");
+    private final JLabel totalValue = new JLabel("0 / 500");
+    private final JLabel percentageValue = new JLabel("0.00%");
+    private final JLabel resultValue = new JLabel("PENDING");
+    private final DefaultTableModel marksModel = new DefaultTableModel(
+            new String[]{"S.No.", "Subject", "Marks (out of 100)"}, 0) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
         }
+    };
 
-        cancel = new JButton("Back");
-        cancel.setBounds(250, 500, 120, 25);
-        cancel.setBackground(Color.BLACK);
-        cancel.setForeground(Color.WHITE);
-        cancel.addActionListener(this);
-        cancel.setFont(new Font("Tahoma", Font.BOLD, 15));
-        add(cancel);
+    public Marks(String rollno, String semester) {
+        this.rollno = rollno;
+        this.selectedSemester = semester;
 
+        setTitle("Examination Result");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize(700, 650);
+        setLocation(420, 80);
+
+        JPanel root = new JPanel(new BorderLayout(0, 16));
+        root.setBackground(new Color(248, 250, 253));
+        root.setBorder(new EmptyBorder(20, 28, 20, 28));
+        setContentPane(root);
+
+        root.add(createHeader(), BorderLayout.NORTH);
+        root.add(createReportBody(), BorderLayout.CENTER);
+        root.add(createFooter(), BorderLayout.SOUTH);
+
+        loadResult();
         setVisible(true);
     }
 
+    private JPanel createHeader() {
+        JPanel header = new JPanel();
+        header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
+        header.setBackground(NAVY);
+        header.setBorder(new EmptyBorder(16, 16, 16, 16));
+
+        JLabel university = new JLabel("V.S. TECHNICAL UNIVERSITY");
+        university.setFont(new Font("Tahoma", Font.BOLD, 24));
+        university.setForeground(Color.WHITE);
+        university.setAlignmentX(Component.CENTER_ALIGNMENT);
+        header.add(university);
+
+        JLabel title = new JLabel("EXAMINATION RESULT");
+        title.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        title.setForeground(new Color(205, 222, 243));
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        header.add(Box.createVerticalStrut(5));
+        header.add(title);
+        return header;
+    }
+
+    private JPanel createReportBody() {
+        JPanel body = new JPanel(new BorderLayout(0, 14));
+        body.setOpaque(false);
+        body.add(createStudentInfo(), BorderLayout.NORTH);
+
+        JTable marksTable = new JTable(marksModel);
+        marksTable.setRowHeight(30);
+        marksTable.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        marksTable.setShowVerticalLines(false);
+        marksTable.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
+        marksTable.getTableHeader().setBackground(LIGHT_BLUE);
+        marksTable.getTableHeader().setForeground(NAVY);
+        marksTable.getColumnModel().getColumn(0).setPreferredWidth(55);
+        marksTable.getColumnModel().getColumn(1).setPreferredWidth(290);
+        marksTable.getColumnModel().getColumn(2).setPreferredWidth(180);
+
+        JScrollPane tableScroll = new JScrollPane(marksTable);
+        tableScroll.setBorder(new LineBorder(new Color(205, 214, 226)));
+        body.add(tableScroll, BorderLayout.CENTER);
+        body.add(createSummary(), BorderLayout.SOUTH);
+        return body;
+    }
+
+    private JPanel createStudentInfo() {
+        JPanel info = new JPanel(new GridLayout(1, 2, 12, 0));
+        info.setOpaque(false);
+        info.add(createInfoCard("ROLL NUMBER", rollno));
+        JPanel semesterCard = createInfoCard("SEMESTER", "");
+        semesterValue.setFont(new Font("Tahoma", Font.BOLD, 16));
+        semesterValue.setForeground(NAVY);
+        semesterCard.remove(2);
+        semesterCard.add(semesterValue);
+        info.add(semesterCard);
+        return info;
+    }
+
+    private JPanel createInfoCard(String labelText, String valueText) {
+        JPanel card = new JPanel();
+        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+        card.setBackground(Color.WHITE);
+        card.setBorder(new EmptyBorder(10, 14, 10, 14));
+        JLabel label = new JLabel(labelText);
+        label.setFont(new Font("Tahoma", Font.BOLD, 11));
+        label.setForeground(new Color(100, 110, 124));
+        JLabel value = new JLabel(valueText);
+        value.setFont(new Font("Tahoma", Font.BOLD, 16));
+        value.setForeground(NAVY);
+        card.add(label);
+        card.add(Box.createVerticalStrut(4));
+        card.add(value);
+        return card;
+    }
+
+    private JPanel createSummary() {
+        JPanel summary = new JPanel(new GridLayout(1, 3, 10, 0));
+        summary.setOpaque(false);
+        summary.add(createInfoCard("TOTAL", ""));
+        summary.add(createInfoCard("PERCENTAGE", ""));
+        summary.add(createInfoCard("RESULT", ""));
+        replaceCardValue((JPanel) summary.getComponent(0), totalValue);
+        replaceCardValue((JPanel) summary.getComponent(1), percentageValue);
+        replaceCardValue((JPanel) summary.getComponent(2), resultValue);
+        return summary;
+    }
+
+    private void replaceCardValue(JPanel card, JLabel value) {
+        value.setFont(new Font("Tahoma", Font.BOLD, 16));
+        value.setForeground(NAVY);
+        card.remove(2);
+        card.add(value);
+    }
+
+    private JPanel createFooter() {
+        JPanel footer = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        footer.setOpaque(false);
+        JButton back = new JButton("Back");
+        back.setBackground(NAVY);
+        back.setForeground(Color.WHITE);
+        back.setFocusPainted(false);
+        back.setFont(new Font("Tahoma", Font.BOLD, 14));
+        back.setPreferredSize(new Dimension(130, 34));
+        back.addActionListener(this);
+        footer.add(back);
+        return footer;
+    }
+
+    private void loadResult() {
+        int total = 0;
+        boolean hasResult = false;
+        try {
+            Conn c = new Conn();
+            PreparedStatement statement = c.connection.prepareStatement(
+                    "select s.subj1, s.subj2, s.subj3, s.subj4, s.subj5, "
+                            + "m.mrk1, m.mrk2, m.mrk3, m.mrk4, m.mrk5, m.semester "
+                            + "from subject s join marks m on s.rollno = m.rollno and s.semester = m.semester "
+                            + "where s.rollno = ? and s.semester = ?");
+            statement.setString(1, rollno);
+            statement.setString(2, selectedSemester);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                semesterValue.setText(resultSet.getString("semester"));
+                for (int index = 1; index <= 5; index++) {
+                    String subject = resultSet.getString("subj" + index);
+                    String markText = resultSet.getString("mrk" + index);
+                    int mark = Integer.parseInt(markText);
+                    total += mark;
+                    marksModel.addRow(new Object[]{index, subject, mark});
+                }
+                hasResult = true;
+            } else {
+                semesterValue.setText(selectedSemester);
+                JOptionPane.showMessageDialog(this, "No result is available for this semester.");
+            }
+        } catch (Exception exception) {
+            JOptionPane.showMessageDialog(this, "Could not load the examination result.");
+            exception.printStackTrace();
+        }
+
+        totalValue.setText(total + " / 500");
+        percentageValue.setText(String.format("%.2f%%", total / 5.0));
+        resultValue.setText(hasResult && total >= 200 ? "PASS" : "PENDING");
+        resultValue.setForeground(hasResult && total >= 200 ? new Color(29, 122, 68) : new Color(170, 80, 30));
+    }
+
     @Override
-    public void actionPerformed(ActionEvent e) {
-        setVisible(false);
+    public void actionPerformed(ActionEvent event) {
+        dispose();
     }
 
     public static void main(String[] args) {
-        new Marks("","");
+        new Marks("", "");
     }
 }
