@@ -160,6 +160,7 @@ public class Marks extends JFrame implements ActionListener {
     private void loadResult() {
         int total = 0;
         boolean hasResult = false;
+        boolean hasFailedSubject = false;
         try {
             Conn c = new Conn();
             PreparedStatement statement = c.connection.prepareStatement(
@@ -178,6 +179,9 @@ public class Marks extends JFrame implements ActionListener {
                     String markText = resultSet.getString("mrk" + index);
                     int mark = Integer.parseInt(markText);
                     total += mark;
+                    if (mark < 33) {
+                        hasFailedSubject = true;
+                    }
                     marksModel.addRow(new Object[]{index, subject, mark});
                 }
                 hasResult = true;
@@ -192,8 +196,16 @@ public class Marks extends JFrame implements ActionListener {
 
         totalValue.setText(total + " / 500");
         percentageValue.setText(String.format("%.2f%%", total / 5.0));
-        resultValue.setText(hasResult && total >= 200 ? "PASS" : "PENDING");
-        resultValue.setForeground(hasResult && total >= 200 ? new Color(29, 122, 68) : new Color(170, 80, 30));
+        if (!hasResult) {
+            resultValue.setText("PENDING");
+            resultValue.setForeground(new Color(170, 80, 30));
+        } else if (total >= 200 && !hasFailedSubject) {
+            resultValue.setText("PASS");
+            resultValue.setForeground(new Color(29, 122, 68));
+        } else {
+            resultValue.setText("FAIL");
+            resultValue.setForeground(new Color(180, 45, 45));
+        }
     }
 
     @Override
