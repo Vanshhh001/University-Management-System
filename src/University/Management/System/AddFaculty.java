@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Random;
+import java.sql.ResultSet;
 
 public class AddFaculty extends JFrame implements ActionListener {
 
@@ -17,8 +17,7 @@ public class AddFaculty extends JFrame implements ActionListener {
     JComboBox courseBox,departmentBox;
     JButton submit,cancel;
 
-    Random ran = new Random();
-    long f4 = Math.abs((ran.nextLong() % 90000) + 1000L);
+    private static final long FIRST_EMPLOYEE_ID = 1000010000L;
 
     AddFaculty(){
 
@@ -52,7 +51,7 @@ public class AddFaculty extends JFrame implements ActionListener {
         empID.setFont(new Font("serif",Font.BOLD,20));
         add(empID);
 
-        empText =  new JLabel("10000"+f4);
+        empText =  new JLabel(nextEmployeeId());
         empText.setBounds(200,200,150,30);
         empText.setFont(new Font("serif",Font.BOLD,20));
         add(empText);
@@ -168,6 +167,24 @@ public class AddFaculty extends JFrame implements ActionListener {
         setLayout(null);
         setVisible(true);
 
+    }
+
+    /** Returns the next employee ID after the latest ID in the 100001 series. */
+    private String nextEmployeeId() {
+        long nextEmployeeId = FIRST_EMPLOYEE_ID;
+        try {
+            Conn c = new Conn();
+            ResultSet resultSet = c.statement.executeQuery(
+                    "select max(cast(empId as unsigned)) as highest_employee_id from teacher "
+                            + "where empId like '100001%'");
+            if (resultSet.next() && resultSet.getLong("highest_employee_id") >= FIRST_EMPLOYEE_ID) {
+                nextEmployeeId = resultSet.getLong("highest_employee_id") + 1;
+            }
+        } catch (Exception exception) {
+            JOptionPane.showMessageDialog(this,
+                    "Could not read the previous employee ID. The first employee ID will be used.");
+        }
+        return String.valueOf(nextEmployeeId);
     }
 
     @Override

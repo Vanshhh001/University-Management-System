@@ -179,7 +179,7 @@ public class AddStudent extends JFrame implements ActionListener {
             Conn c = new Conn();
             ResultSet resultSet = c.statement.executeQuery(
                     "select max(cast(rollno as unsigned)) as highest_rollno from student "
-                            + "where rollno regexp '^[0-9]+$'");
+                            + "where rollno like '100002%'");
             if (resultSet.next() && resultSet.getLong("highest_rollno") >= FIRST_ROLL_NUMBER) {
                 nextRollNumber = resultSet.getLong("highest_rollno") + 1;
             }
