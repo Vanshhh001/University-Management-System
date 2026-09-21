@@ -4,13 +4,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class Login extends JFrame implements ActionListener {
 
     JTextField textFieldName;
     JPasswordField passwordField;
-    JButton login,back;
+    JButton login,signup,back;
 
     Login(){                 //constructor
 
@@ -37,8 +38,15 @@ public class Login extends JFrame implements ActionListener {
         login.addActionListener(this);
         add(login);
 
+        signup = new JButton("Sign Up");
+        signup.setBounds(180,140,120,30);
+        signup.setBackground(Color.black);
+        signup.setForeground(Color.white);
+        signup.addActionListener(this);
+        add(signup);
+
         back = new JButton("Back");
-        back.setBounds(180,140,120,30);
+        back.setBounds(320,140,120,30);
         back.setBackground(Color.black);
         back.setForeground(Color.white);
         back.addActionListener(this);
@@ -74,12 +82,15 @@ public class Login extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == login){
             String username = textFieldName.getText();
-            String password = passwordField.getText();
+            String password = new String(passwordField.getPassword());
 
-            String query = "select * from login where username='"+username+"' and password ='"+password+"' ";
             try{
                 Conn c = new Conn();
-                ResultSet resultSet = c.statement.executeQuery(query);
+                PreparedStatement statement = c.connection.prepareStatement(
+                        "select * from login where username = ? and password = ?");
+                statement.setString(1, username);
+                statement.setString(2, password);
+                ResultSet resultSet = statement.executeQuery();
                 if(resultSet.next()){
                     setVisible(false);
                     //next class
@@ -93,7 +104,9 @@ public class Login extends JFrame implements ActionListener {
             }
 
 
-        }else{
+        }else if (e.getSource() == signup) {
+            new Signup();
+        } else {
             setVisible(false);
         }
 
